@@ -11,8 +11,8 @@ all : compile
 
 compile :
 	@echo "Sous Licence GPLv3"
-	if [ ! -d $(BIN) ]; then mkdir $(BIN); fi
-	if [ ! -d $(LOG) ]; then mkdir $(LOG); fi
+	if [ ! -d $(BIN) ]; then mkdir $(BIN);fi
+	if [ ! -d $(LOG) ]; then mkdir $(LOG);fi
 	@echo "Compiling..."
 	$(CC) -o $(BIN)/$(COUT) $(CFILES) $(CFLAGS) $(CLOAD) 2> $(LOG)/$(LOGFILE)
 	@echo "Compilation done."
