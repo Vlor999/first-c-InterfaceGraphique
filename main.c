@@ -1,3 +1,10 @@
+/***************************
+ *                         *
+ * Sous Licence GNU/GPLv3  *
+ *                         *
+ ***************************/
+
+
 #include <stdio.h>
 #include <SDL2/SDL.h>
 #include <stdlib.h>
