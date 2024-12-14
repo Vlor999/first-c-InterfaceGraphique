@@ -4,31 +4,10 @@
 #include <stdbool.h>
 #include <time.h>
 #include <math.h>
+#include "myBubble.h"
 
-#define NAME "First Graphical Interface"
-#define LARGEUR 900
-#define HAUTEUR 500
-#define COULEUR_FOND  0x00000000
-#define PESANTEUR 9.81 
-#define TIMESTEP 0.1
-#define PI 3.1415
-#define AMORTISSEMENT 0.95
 
-#define NOMBRE_BALLE 5
-
-struct Cercle
-{
-    double centreX;
-    double centreY;
-    double rayon;
-    double vX;
-    double vY;
-    int couleur;
-    int n;
-};
-
-// Gestion de la collision entre deux cercles
-void gereCollision(struct Cercle* c1, struct Cercle* c2) {
+void gereCollision(Sphere* c1, struct Sphere* c2) {
     double dx = c2->centreX - c1->centreX;
     double dy = c2->centreY - c1->centreY;
     double dist = dx * dx + dy * dy;
@@ -66,66 +45,80 @@ void gereCollision(struct Cercle* c1, struct Cercle* c2) {
 }
 
 
-
-void dessineCercle(SDL_Surface* currentSurface, struct Cercle cercle)
+void drawCirclePoints(SDL_Surface* surface, int cx, int cy, int x, int y, Uint32 couleur) 
 {
-    double positionX = cercle.centreX;
-    double positionY = cercle.centreY;
-    double rayon = cercle.rayon;
+    SDL_Rect pixel;
 
-    double distanceMax = rayon * rayon;
+    pixel = (SDL_Rect){cx + x, cy + y, 1, 1}; SDL_FillRect(surface, &pixel, couleur);
+    pixel = (SDL_Rect){cx - x, cy + y, 1, 1}; SDL_FillRect(surface, &pixel, couleur);
+    pixel = (SDL_Rect){cx + x, cy - y, 1, 1}; SDL_FillRect(surface, &pixel, couleur);
+    pixel = (SDL_Rect){cx - x, cy - y, 1, 1}; SDL_FillRect(surface, &pixel, couleur);
+    pixel = (SDL_Rect){cx + y, cy + x, 1, 1}; SDL_FillRect(surface, &pixel, couleur);
+    pixel = (SDL_Rect){cx - y, cy + x, 1, 1}; SDL_FillRect(surface, &pixel, couleur);
+    pixel = (SDL_Rect){cx + y, cy - x, 1, 1}; SDL_FillRect(surface, &pixel, couleur);
+    pixel = (SDL_Rect){cx - y, cy - x, 1, 1}; SDL_FillRect(surface, &pixel, couleur);
+}
 
-    double minX = positionX - rayon;
-    double minY = positionY - rayon;
-    double maxX = positionX + rayon;
-    double maxY = positionY + rayon;
+void dessineSphere(SDL_Surface* currentSurface, Sphere sphere)
+{
+    int centreX = (int)sphere.centreX;
+    int centreY = (int)sphere.centreY;
+    int rayon = (int)sphere.rayon;
 
-    for(double x = minX - 1; x <= maxX; x++)
+    int x = 0;
+    int y = rayon;
+    int d = 3 - 2 * rayon;
+
+    drawCirclePoints(currentSurface, centreX, centreY, x, y, sphere.couleur);
+
+    while (y >= x) 
     {
-        for(double y = minY - 1; y <= maxY; y++)
-        {
-            double distance = (x - positionX) * (x - positionX) + (y - positionY) * (y - positionY);
+        x++;
 
-            if (distance < distanceMax)
-            {
-                SDL_Rect currentPixel = (SDL_Rect) {x,y,1,1};
-                SDL_FillRect(currentSurface, &currentPixel, cercle.couleur);
-            }
-        }        
+        // Vérifier la décision
+        if (d > 0) {
+            y--;
+            d = d + 4 * (x - y) + 10;
+        } 
+        else 
+        {
+            d = d + 4 * x + 6;
+        }
+
+        // Dessiner les points symétriques pour le cercle
+        drawCirclePoints(currentSurface, centreX, centreY, x, y, sphere.couleur);
     }
 }
 
-void deplaceBalle(struct Cercle* cercle)
+void deplaceBalle(Sphere* Sphere)
 {
-    cercle->vY += PESANTEUR * TIMESTEP;
+    Sphere->vY += PESANTEUR * TIMESTEP;
 
-    cercle->centreX += cercle->vX * TIMESTEP;
-    cercle->centreY += cercle->vY * TIMESTEP;
+    Sphere->centreX += Sphere->vX * TIMESTEP;
+    Sphere->centreY += Sphere->vY * TIMESTEP;
 
-    const float ELASTICITE = AMORTISSEMENT; // Renvoie 95% de ce qui est donné
-
-    if (cercle->centreX - cercle->rayon < 0)
+    if (Sphere->centreX - Sphere->rayon < 0)
     {
-        cercle->centreX = cercle->rayon;
-        cercle->vX = -cercle->vX * ELASTICITE;
+        Sphere->centreX = Sphere->rayon;
+        Sphere->vX = -Sphere->vX * AMORTISSEMENT;
     }
-    if (cercle->centreX + cercle->rayon > LARGEUR)
+    if (Sphere->centreX + Sphere->rayon > LARGEUR)
     {
-        cercle->centreX = LARGEUR - cercle->rayon;
-        cercle->vX = -cercle->vX * ELASTICITE;
+        Sphere->centreX = LARGEUR - Sphere->rayon;
+        Sphere->vX = -Sphere->vX * AMORTISSEMENT;
     }
-    if (cercle->centreY - cercle->rayon < 0)
+    if (Sphere->centreY - Sphere->rayon < 0)
     {
-        cercle->centreY = cercle->rayon;
-        cercle->vY = -cercle->vY * ELASTICITE;
+        Sphere->centreY = Sphere->rayon;
+        Sphere->vY = -Sphere->vY * AMORTISSEMENT;
     }
-    if (cercle->centreY + cercle->rayon > HAUTEUR)
+    if (Sphere->centreY + Sphere->rayon > HAUTEUR)
     {
-        cercle->centreY = HAUTEUR - cercle->rayon;
-        cercle->vY = -cercle->vY * ELASTICITE;
+        Sphere->centreY = HAUTEUR - Sphere->rayon;
+        Sphere->vY = -Sphere->vY * AMORTISSEMENT;
     }
-
-    cercle->n++; // Incrément du compteur de déplacement
+    Sphere->numeroCase = (int) (Sphere->centreX / TAILLE_CASE) + (int) (Sphere->centreY / TAILLE_CASE) * (LARGEUR / TAILLE_CASE);
+    Sphere->n++; // Incrément du compteur de déplacement
 }
 
 int couleurAleatoire()
@@ -136,18 +129,50 @@ int couleurAleatoire()
     return (r << 16) | (g << 8) | b;
 }
 
-void initCercles(struct Cercle* listCercle, int nombre)
+void initSpheres(Sphere* listSphere, int nombre)
 {
     for (int i = 0; i < nombre; i++)
     {
-        listCercle[i].centreX = rand() % LARGEUR;
-        listCercle[i].centreY = rand() % HAUTEUR;
-        listCercle[i].rayon = 10 + rand() % 40; // Rayon entre 10 et 50
-        listCercle[i].vX = (rand() % 100 - 50); // Vitesse entre -50 et 50
-        listCercle[i].vY = (rand() % 100 - 50); // Vitesse entre -50 et 50
-        listCercle[i].couleur = couleurAleatoire();
-        listCercle[i].n = 0;
+        listSphere[i].centreX = rand() % LARGEUR;
+        listSphere[i].centreY = rand() % HAUTEUR;
+        listSphere[i].numeroCase = (int) (listSphere[i].centreX / TAILLE_CASE) + (int) (listSphere[i].centreY / TAILLE_CASE) * (LARGEUR / TAILLE_CASE);
+        listSphere[i].rayon = rand() % MAX_RAYON + 1;
+        listSphere[i].vX = (rand() % 100 - 50); // Vitesse entre -50 et 50
+        listSphere[i].vY = (rand() % 100 - 50); // Vitesse entre -50 et 50
+        listSphere[i].couleur = couleurAleatoire();
+        listSphere[i].n = 0;
     }
+}
+
+bool compareSphereCase(Sphere c1, Sphere c2)
+{
+    int diff = abs(c1.numeroCase - c2.numeroCase);
+    if (diff == 0 || diff == 1 || diff == LARGEUR / TAILLE_CASE || abs(diff  - (LARGEUR / TAILLE_CASE)) == 1)
+    {
+        return true;
+    }
+    return false;
+}
+
+void gereAllCollision(Sphere* listSphere, int nombre)
+{
+    int compte = 0;
+    for (int i = 0; i < nombre; i++) 
+    {
+        for (int j = i + 1; j < nombre; j++) 
+        {
+            if(i != j && compareSphereCase(listSphere[i], listSphere[j]))
+            {
+                gereCollision(&listSphere[i], &listSphere[j]);
+            }
+            else
+            {
+                compte++;
+            }
+        }
+    }
+
+    printf("\rPourcentage de collision évitées : %.2f%%", (float)compte/(nombre*(nombre - 1)/2) * 100);
 }
 
 int main()
@@ -164,36 +189,24 @@ int main()
         exit(EXIT_FAILURE);
     }
 
-    bool continueSimulation = true;
-    // struct Cercle mainCercle = (struct Cercle) {450, 250, 50, 50, 50, 0};
-    struct Cercle* listCercle = malloc(NOMBRE_BALLE * sizeof(struct Cercle));
-    initCercles(listCercle, NOMBRE_BALLE);
+    Sphere* listSphere = malloc(NOMBRE_BALLE * sizeof(Sphere));
+    initSpheres(listSphere, NOMBRE_BALLE);
     SDL_Event event;
+    bool continueSimulation = true;
     while(continueSimulation)
     {
         for (int i = 0; i < NOMBRE_BALLE; i++)
         {
-            dessineCercle(mainSurface, listCercle[i]);
+            dessineSphere(mainSurface, listSphere[i]);
         }
 
         SDL_UpdateWindowSurface(mainWindow);
 
         for (int i = 0; i < NOMBRE_BALLE; i++)
         {
-            deplaceBalle(&listCercle[i]);
+            deplaceBalle(&listSphere[i]);
         }
-
-        for (int i = 0; i < NOMBRE_BALLE; i++) 
-        {
-            for (int j = i + 1; j < NOMBRE_BALLE; j++) 
-            {
-                if(i != j)
-                {
-                    gereCollision(&listCercle[i], &listCercle[j]);
-                }
-            }
-        }
-
+        gereAllCollision(listSphere, NOMBRE_BALLE);
         SDL_FillRect(mainSurface, &cleanWindow, COULEUR_FOND);
 
         while(SDL_PollEvent(&event))
@@ -206,7 +219,8 @@ int main()
         SDL_Delay(20);
     }
 
-    free(listCercle);
+    printf("\n");
+    free(listSphere);
     SDL_DestroyWindow(mainWindow);
     return EXIT_SUCCESS;
 }
