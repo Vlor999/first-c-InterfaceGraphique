@@ -3,6 +3,8 @@
  * Sous Licence GNU/GPLv3  *
  *                         *
  ***************************/
+#ifndef MYBUBBLE_H
+#define MYBUBBLE_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,4 +36,4 @@ typedef struct Sphere
     int n;
 }Sphere;
 
-
+#endif

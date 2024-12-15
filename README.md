@@ -56,6 +56,7 @@ Stop the simulation by closing the graphical window.
 | `AMORTISSEMENT`    | Damping factor for collisions (`0.97`).        |
 | `NOMBRE_BALLE`     | Total number of spheres (1000).               |
 
+
 ## Project Structure
 - **Physics Engine**: Includes functions like `gereCollision` and `deplaceBalle` to handle sphere physics.
 - **Rendering**: Functions like `dessineSphere` render spheres on the SDL2 surface.

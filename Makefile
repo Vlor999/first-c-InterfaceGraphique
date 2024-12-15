@@ -5,6 +5,8 @@ CFILES = main.c
 COUT = main
 BIN = bin
 LOG = log
+SRC = src
+INCLUDE = include
 LOGFILE = error.log
 
 all : compile
@@ -14,7 +16,7 @@ compile :
 	if [ ! -d $(BIN) ]; then mkdir $(BIN);fi
 	if [ ! -d $(LOG) ]; then mkdir $(LOG);fi
 	@echo "Compiling..."
-	$(CC) -o $(BIN)/$(COUT) $(CFILES) $(CFLAGS) $(CLOAD) 2> $(LOG)/$(LOGFILE)
+	$(CC) -o $(BIN)/$(COUT) $(SRC)/$(CFILES) $(CFLAGS) $(INCLUDE)/$(CLOAD) 2> $(LOG)/$(LOGFILE)
 	@echo "Compilation done."
 
 run : compile
