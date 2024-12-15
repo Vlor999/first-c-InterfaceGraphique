@@ -19,10 +19,15 @@
 #define TIMESTEP 0.1
 #define PI 3.1415
 #define AMORTISSEMENT 0.97
-#define MAX_RAYON 5
-#define TAILLE_CASE MAX_RAYON
+#define MAX_RAYON 50
+#define TAILLE_CASE MAX_RAYON / 2
 
-#define NOMBRE_BALLE 1000
+#define NOMBRE_BALLE 100
+
+typedef struct Delai
+{
+    int x;
+}Delai;
 
 typedef struct Sphere
 {

@@ -79,10 +79,27 @@ void deplaceBalle(Sphere* Sphere)
 bool compareSphereCase(Sphere c1, Sphere c2)
 {
     int diff = abs(c1.numeroCase - c2.numeroCase);
-    if (diff == 0 || diff == 1 || diff == LARGEUR / TAILLE_CASE || abs(diff  - (LARGEUR / TAILLE_CASE)) == 1)
+    int casesParLigne = LARGEUR / TAILLE_CASE;
+
+    if ((c1.numeroCase % casesParLigne == 0 && c2.numeroCase % casesParLigne == casesParLigne - 1) ||
+        (c2.numeroCase % casesParLigne == 0 && c1.numeroCase % casesParLigne == casesParLigne - 1))
     {
-        return true;
+        return false; // Empêche des collisions incorrectes à travers les bords
     }
+
+
+    // Vérifie si les sphères sont dans la même case
+    if (diff == 0)
+        return true;
+
+    // Vérifie si les sphères sont dans des cases adjacentes (horizontalement ou verticalement)
+    if (diff == 1 || diff == casesParLigne)
+        return true;
+
+    // Vérifie si les sphères sont dans des cases diagonales adjacentes
+    if (diff == casesParLigne + 1 || diff == casesParLigne - 1)
+        return true;
+
     return false;
 }
 
@@ -104,5 +121,5 @@ void gereAllCollision(Sphere* listSphere, int nombre)
         }
     }
 
-    printf("\rPourcentage de collision évitées : %.2f%%", (float)compte/(nombre*(nombre - 1)/2) * 100);
+    printf("\rPourcentage de collision évitées : %6.2f%% -- ", (float)compte/(nombre*(nombre - 1)/2) * 100);
 }
