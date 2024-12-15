@@ -23,8 +23,8 @@ void gereCollision(Sphere* c1, struct Sphere* c2) {
         double v1 = c1->vX * nx + c1->vY * ny;
         double v2 = c2->vX * nx + c2->vY * ny;
 
-        double m1 = 4 * PI * c1->rayon * c1->rayon * c1->rayon / 4;  // Masse correspond au volume (Sphère) : Masse Volumique : 1
-        double m2 = 4 * PI * c2->rayon * c2->rayon * c2->rayon / 4;
+        double m1 = c1->volume;  // Masse correspond au volume (Sphère) : Masse Volumique : 1
+        double m2 = c2->volume;
 
         double v1_final = ((m1 - m2) * v1 + 2 * m2 * v2) / (m1 + m2);
         double v2_final = ((m2 - m1) * v2 + 2 * m1 * v1) / (m1 + m2);
@@ -84,21 +84,23 @@ bool compareSphereCase(Sphere c1, Sphere c2)
     if ((c1.numeroCase % casesParLigne == 0 && c2.numeroCase % casesParLigne == casesParLigne - 1) ||
         (c2.numeroCase % casesParLigne == 0 && c1.numeroCase % casesParLigne == casesParLigne - 1))
     {
-        return false; // Empêche des collisions incorrectes à travers les bords
+        return false;
     }
 
-
-    // Vérifie si les sphères sont dans la même case
     if (diff == 0)
+    {
         return true;
+    }
 
-    // Vérifie si les sphères sont dans des cases adjacentes (horizontalement ou verticalement)
     if (diff == 1 || diff == casesParLigne)
+    {
         return true;
+    }
 
-    // Vérifie si les sphères sont dans des cases diagonales adjacentes
     if (diff == casesParLigne + 1 || diff == casesParLigne - 1)
+    {
         return true;
+    }
 
     return false;
 }

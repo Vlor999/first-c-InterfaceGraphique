@@ -17,6 +17,7 @@ void initNewSpherePosition(Sphere* listSphere, int nombre, int x, int y)
     listSphere[nombre].vX = (rand() % 100 - 50); // Vitesse entre -50 et 50
     listSphere[nombre].vY = (rand() % 100 - 50); // Vitesse entre -50 et 50
     listSphere[nombre].couleur = couleurAleatoire();
+    listSphere[nombre].volume = (4.0 / 3.0) * PI * pow(listSphere[nombre].rayon, 3);
     listSphere[nombre].n = 0;
 }
 
@@ -24,12 +25,7 @@ void initNewSphere(Sphere* listSphere, int nombre)
 {
     listSphere[nombre].centreX = rand() % LARGEUR;
     listSphere[nombre].centreY = rand() % HAUTEUR;
-    listSphere[nombre].numeroCase = (int) (listSphere[nombre].centreX / TAILLE_CASE) + (int) (listSphere[nombre].centreY / TAILLE_CASE) * (LARGEUR / TAILLE_CASE);
-    listSphere[nombre].rayon = rand() % MAX_RAYON + 1;
-    listSphere[nombre].vX = (rand() % 100 - 50); // Vitesse entre -50 et 50
-    listSphere[nombre].vY = (rand() % 100 - 50); // Vitesse entre -50 et 50
-    listSphere[nombre].couleur = couleurAleatoire();
-    listSphere[nombre].n = 0;
+    initNewSpherePosition(listSphere, nombre, listSphere[nombre].centreX, listSphere[nombre].centreY);
 }
 
 void initSpheres(Sphere* listSphere, int nombre)
