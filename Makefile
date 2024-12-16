@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -g -lSDL2 -lm
+CFLAGS = -Wall -Wextra -g -lSDL2 -lm -std=c99
 CLOAD = myBubble.h
 CFILES = main.c
 COUT = main

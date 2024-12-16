@@ -8,8 +8,8 @@
 #include "../include/mouvement.h"
 
 void gereCollision(Sphere* c1, struct Sphere* c2) {
-    double dx = c2->centreX - c1->centreX;
-    double dy = c2->centreY - c1->centreY;
+    double dx = c2->centre.centreX - c1->centre.centreX;
+    double dy = c2->centre.centreY - c1->centre.centreY;
     double dist = dx * dx + dy * dy;
     double rayonSum = c1->rayon + c2->rayon;
     
@@ -20,8 +20,8 @@ void gereCollision(Sphere* c1, struct Sphere* c2) {
         double nx = dx / dist;
         double ny = dy / dist;
 
-        double v1 = c1->vX * nx + c1->vY * ny;
-        double v2 = c2->vX * nx + c2->vY * ny;
+        double v1 = c1->vitesse.vX * nx + c1->vitesse.vY * ny;
+        double v2 = c2->vitesse.vX * nx + c2->vitesse.vY * ny;
 
         double m1 = c1->volume;  // Masse correspond au volume (Sphère) : Masse Volumique : 1
         double m2 = c2->volume;
@@ -29,50 +29,54 @@ void gereCollision(Sphere* c1, struct Sphere* c2) {
         double v1_final = ((m1 - m2) * v1 + 2 * m2 * v2) / (m1 + m2);
         double v2_final = ((m2 - m1) * v2 + 2 * m1 * v1) / (m1 + m2);
 
-        c1->vX += AMORTISSEMENT * (v1_final - v1) * nx;
-        c1->vY += AMORTISSEMENT * (v1_final - v1) * ny;
+        c1->vitesse.vX += AMORTISSEMENT * (v1_final - v1) * nx;
+        c1->vitesse.vY += AMORTISSEMENT * (v1_final - v1) * ny;
 
-        c2->vX += (v2_final - v2) * nx;
-        c2->vY += (v2_final - v2) * ny;
+        c2->vitesse.vX += (v2_final - v2) * nx;
+        c2->vitesse.vY += (v2_final - v2) * ny;
 
         double overlap = rayonSum - dist;
-        c1->centreX -= nx * overlap * 0.5;
-        c1->centreY -= ny * overlap * 0.5;
+        c1->centre.centreX -= nx * overlap * 0.5;
+        c1->centre.centreY -= ny * overlap * 0.5;
         
-        c2->centreX += nx * overlap * 0.5;
-        c2->centreY += ny * overlap * 0.5;
+        c2->centre.centreX += nx * overlap * 0.5;
+        c2->centre.centreX += ny * overlap * 0.5;
+
+        c1->trajectoire[c1->n % TAILLE_TRAJECTOIRE] = c1->centre;
+        c2->trajectoire[c2->n % TAILLE_TRAJECTOIRE] = c2->centre;
     }
 }
 
 void deplaceBalle(Sphere* Sphere)
 {
-    Sphere->vY += PESANTEUR * TIMESTEP;
+    Sphere->vitesse.vY += PESANTEUR * TIMESTEP;
 
-    Sphere->centreX += Sphere->vX * TIMESTEP;
-    Sphere->centreY += Sphere->vY * TIMESTEP;
+    Sphere->centre.centreX += Sphere->vitesse.vX * TIMESTEP;
+    Sphere->centre.centreY += Sphere->vitesse.vY * TIMESTEP;
 
-    if (Sphere->centreX - Sphere->rayon < 0)
+    if (Sphere->centre.centreX - Sphere->rayon < 0)
     {
-        Sphere->centreX = Sphere->rayon;
-        Sphere->vX = -Sphere->vX * AMORTISSEMENT;
+        Sphere->centre.centreX = Sphere->rayon;
+        Sphere->vitesse.vX = -Sphere->vitesse.vX * AMORTISSEMENT;
     }
-    if (Sphere->centreX + Sphere->rayon > LARGEUR)
+    if (Sphere->centre.centreX + Sphere->rayon > LARGEUR)
     {
-        Sphere->centreX = LARGEUR - Sphere->rayon;
-        Sphere->vX = -Sphere->vX * AMORTISSEMENT;
+        Sphere->centre.centreX = LARGEUR - Sphere->rayon;
+        Sphere->vitesse.vX = -Sphere->vitesse.vX * AMORTISSEMENT;
     }
-    if (Sphere->centreY - Sphere->rayon < 0)
+    if (Sphere->centre.centreY - Sphere->rayon < 0)
     {
-        Sphere->centreY = Sphere->rayon;
-        Sphere->vY = -Sphere->vY * AMORTISSEMENT;
+        Sphere->centre.centreY = Sphere->rayon;
+        Sphere->vitesse.vY = -Sphere->vitesse.vY * AMORTISSEMENT;
     }
-    if (Sphere->centreY + Sphere->rayon > HAUTEUR)
+    if (Sphere->centre.centreY + Sphere->rayon > HAUTEUR)
     {
-        Sphere->centreY = HAUTEUR - Sphere->rayon;
-        Sphere->vY = -Sphere->vY * AMORTISSEMENT;
+        Sphere->centre.centreY = HAUTEUR - Sphere->rayon;
+        Sphere->vitesse.vY = -Sphere->vitesse.vY * AMORTISSEMENT;
     }
-    Sphere->numeroCase = (int) (Sphere->centreX / TAILLE_CASE) + (int) (Sphere->centreY / TAILLE_CASE) * (LARGEUR / TAILLE_CASE);
+    Sphere->numeroCase = (int) (Sphere->centre.centreY / TAILLE_CASE) + (int) (Sphere->centre.centreY / TAILLE_CASE) * (LARGEUR / TAILLE_CASE);
     Sphere->n++; // Incrément du compteur de déplacement
+    Sphere->trajectoire[Sphere->n % TAILLE_TRAJECTOIRE] = Sphere->centre;
 }
 
 
