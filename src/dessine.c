@@ -67,7 +67,6 @@ void dessineSphere(SDL_Surface *currentSurface, Sphere sphere)
 
         // Dessiner les points symétriques pour le cercle
         drawCirclePoints(currentSurface, centreX, centreY, x, y, sphere.couleur);
-        dessineOldPath(currentSurface, sphere);
     }
-
+    dessineOldPath(currentSurface, sphere);
 }

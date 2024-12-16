@@ -19,11 +19,11 @@
 #define TIMESTEP 0.1
 #define PI 3.1415
 #define AMORTISSEMENT 0.97
-#define MAX_RAYON 100
+#define MAX_RAYON 20
 #define TAILLE_CASE MAX_RAYON / 2
 #define TAILLE_TRAJECTOIRE 50
 
-#define NOMBRE_BALLE 5
+#define NOMBRE_BALLE 100
 
 typedef struct Delai
 {

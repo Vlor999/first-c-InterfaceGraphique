@@ -32,8 +32,8 @@ void gereCollision(Sphere* c1, struct Sphere* c2) {
         c1->vitesse.vX += AMORTISSEMENT * (v1_final - v1) * nx;
         c1->vitesse.vY += AMORTISSEMENT * (v1_final - v1) * ny;
 
-        c2->vitesse.vX += (v2_final - v2) * nx;
-        c2->vitesse.vY += (v2_final - v2) * ny;
+        c2->vitesse.vX += AMORTISSEMENT * (v2_final - v2) * nx;
+        c2->vitesse.vY += AMORTISSEMENT * (v2_final - v2) * ny;
 
         double overlap = rayonSum - dist;
         c1->centre.centreX -= nx * overlap * 0.5;
