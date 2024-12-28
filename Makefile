@@ -13,10 +13,10 @@ all : compile
 
 compile :
 	@echo "Sous Licence GPLv3"
-	if [ ! -d $(BIN) ]; then mkdir $(BIN);fi
-	if [ ! -d $(LOG) ]; then mkdir $(LOG);fi
+	if [ ! -d $(BIN) ]; then mkdir $(BIN); fi
+	if [ ! -d $(LOG) ]; then mkdir $(LOG); fi
 	@echo "Compiling..."
-	$(CC) -o $(BIN)/$(COUT) $(SRC)/$(CFILES) $(CFLAGS) $(INCLUDE)/$(CLOAD) 2> $(LOG)/$(LOGFILE)
+	$(CC) $(SRC)/$(CFILES) $(CFLAGS) $(CLIBS) -o $(BIN)/$(COUT) 2> $(LOG)/$(LOGFILE)
 	@echo "Compilation done."
 
 run : compile
