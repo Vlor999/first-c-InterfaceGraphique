@@ -64,7 +64,6 @@ int main()
     }
 
     printf("\n");
-    
     free(listSphere);
     SDL_DestroyWindow(mainWindow);
     return EXIT_SUCCESS;
